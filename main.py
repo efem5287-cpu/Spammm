@@ -1,4 +1,4 @@
-# language: Python, file: main.py, target: Railway Deploy
+# language: Python, file: main.py, target: Railway Deploy / In-Memory Session
 import os
 import asyncio
 import threading
@@ -29,8 +29,13 @@ API_HASH = "126917ba7359f8cddb0780ad16e0b1ba"
 BOT_TOKEN = "8967100543:AAGtDqBnFaC7dXe_NeNyqvxgxWMUiUAz14E"
 CHANNEL_USERNAME = "swarovskiyeniden"
 
-print("-> Pyrogram istemcisi oluşturuluyor...", flush=True)
-app = Client("swarovski_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+print("-> Pyrogram in-memory istemcisi oluşturuluyor...", flush=True)
+app = Client(
+    ":memory:",
+    api_id=API_ID,
+    api_hash=API_HASH,
+    bot_token=BOT_TOKEN
+)
 user_states = {}
 
 async def check_membership(client: Client, user_id: int) -> bool:
@@ -153,4 +158,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-    
+            
