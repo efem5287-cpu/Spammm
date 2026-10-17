@@ -1,4 +1,4 @@
-# language: Python, file: main.py, target: Telegram Bot API / Render.com, Python 3.10+
+# language: Python, file: main.py, target: Render Web Service / Telegram Bot
 import os
 import asyncio
 from pyrogram import Client, filters
@@ -10,8 +10,6 @@ BOT_TOKEN = "8967100543:AAGtDqBnFaC7dXe_NeNyqvxgxWMUiUAz14E"
 CHANNEL_USERNAME = "swarovskiyeniden"
 
 app = Client("swarovski_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
-
-# Geçici hafıza (Kullanıcı adımlarını takip etmek için)
 user_states = {}
 
 async def check_membership(client: Client, user_id: int) -> bool:
@@ -111,11 +109,7 @@ async def message_flow_handler(client: Client, message: Message):
         text = user_states[user_id]["text"]
         
         await message.reply_text(f"Spam işlemi başlatıldı! Hedef: {target} | Adet: {count}")
-        
-        # Arka planda mesajları gönderme döngüsü
         asyncio.create_task(run_spam_loop(client, message, target, text, count))
-        
-        # Hafızayı temizle
         del user_states[user_id]
 
 async def run_spam_loop(client, message, target, text, count):
@@ -124,7 +118,7 @@ async def run_spam_loop(client, message, target, text, count):
         try:
             await client.send_message(target, text)
             success += 1
-            await asyncio.sleep(1.5) # Flood koruması için kısa bekleme
+            await asyncio.sleep(1.5)
         except Exception as e:
             await message.reply_text(f"Hata oluştu ({i+1}. mesaj): {e}")
             break
@@ -132,3 +126,4 @@ async def run_spam_loop(client, message, target, text, count):
 
 if __name__ == "__main__":
     app.run()
+    
