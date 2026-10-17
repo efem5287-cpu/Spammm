@@ -1,4 +1,4 @@
-# language: Python, file: main.py, target: Render Web Service / Telegram Bot
+# language: Python, file: main.py, target: Render.com / Python 3.14+
 import os
 import asyncio
 from pyrogram import Client, filters
@@ -124,6 +124,11 @@ async def run_spam_loop(client, message, target, text, count):
             break
     await message.reply_text(f"İşlem tamamlandı! Toplam {success} mesaj gönderildi.")
 
+# Python 3.14 Event Loop Çözümü
+async def main():
+    async with app:
+        await asyncio.Event().wait()
+
 if __name__ == "__main__":
-    app.run()
+    asyncio.run(main())
     
