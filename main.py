@@ -1,4 +1,4 @@
-# language: Python, file: main.py, target: Render.com / Ultimate Fix
+# language: Python, file: main.py, target: Railway Deploy
 import os
 import asyncio
 import threading
@@ -6,7 +6,8 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery
 
-# Render port hatası vermemesi için yerleşik HTTP sunucusu (Ekstra paket istemez)
+print("-> Mini sunucu başlatılıyor...", flush=True)
+
 class HealthCheckHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
@@ -20,15 +21,15 @@ def run_server():
     server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
     server.serve_forever()
 
-# Sunucuyu arka planda başlat
 threading.Thread(target=run_server, daemon=True).start()
+print("-> Mini sunucu aktifleşti, port dinleniyor.", flush=True)
 
-# Bot Bilgileri
 API_ID = 35762182
 API_HASH = "126917ba7359f8cddb0780ad16e0b1ba"
 BOT_TOKEN = "8967100543:AAGtDqBnFaC7dXe_NeNyqvxgxWMUiUAz14E"
 CHANNEL_USERNAME = "swarovskiyeniden"
 
+print("-> Pyrogram istemcisi oluşturuluyor...", flush=True)
 app = Client("swarovski_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 user_states = {}
 
@@ -145,8 +146,9 @@ async def run_spam_loop(client, message, target, text, count):
     await message.reply_text(f"İşlem tamamlandı! Toplam {success} mesaj gönderildi.")
 
 async def main():
+    print("-> Bot Telegram'a bağlanıyor...", flush=True)
     await app.start()
-    print("Bot başarıyla başlatıldı ve çalışıyor!")
+    print("-> BOT BAŞARIYLA AKTİF EDİLDİ!", flush=True)
     await asyncio.Event().wait()
 
 if __name__ == "__main__":
