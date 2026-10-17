@@ -1,9 +1,29 @@
-# language: Python, file: main.py, target: Render.com / Fix Loop
+# language: Python, file: main.py, target: Render.com / Ultimate Fix
 import os
 import asyncio
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery
 
+# Render port hatası vermemesi için yerleşik HTTP sunucusu (Ekstra paket istemez)
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot aktif!")
+    def log_message(self, format, *args):
+        pass
+
+def run_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
+    server.serve_forever()
+
+# Sunucuyu arka planda başlat
+threading.Thread(target=run_server, daemon=True).start()
+
+# Bot Bilgileri
 API_ID = 35762182
 API_HASH = "126917ba7359f8cddb0780ad16e0b1ba"
 BOT_TOKEN = "8967100543:AAGtDqBnFaC7dXe_NeNyqvxgxWMUiUAz14E"
@@ -124,17 +144,11 @@ async def run_spam_loop(client, message, target, text, count):
             break
     await message.reply_text(f"İşlem tamamlandı! Toplam {success} mesaj gönderildi.")
 
+async def main():
+    await app.start()
+    print("Bot başarıyla başlatıldı ve çalışıyor!")
+    await asyncio.Event().wait()
+
 if __name__ == "__main__":
-    try:
-        loop = asyncio.get_event_loop_policy().get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        
-    loop.run_until_complete(app.start())
-    print("Bot başarıyla çalışıyor!")
-    try:
-        loop.run_until_complete(asyncio.Event().wait())
-    finally:
-        loop.run_until_complete(app.stop())
-        
+    asyncio.run(main())
+    
